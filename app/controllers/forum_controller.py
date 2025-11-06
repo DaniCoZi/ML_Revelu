@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.models.post import Post
+from app.services.moderation import analyze_text
 
 forum_bp = Blueprint("forum", __name__, url_prefix="/api")
 
@@ -23,7 +24,16 @@ def list_posts():
         })
     return jsonify(out), 200
 
-# ---- CREATE: crear post
+# ---- PREVIEW MODERATION: para feedback en el front
+@forum_bp.post("/moderate")
+@login_required
+def moderate_preview():
+    data = request.get_json(silent=True) or {}
+    content = (data.get("content") or "").strip()
+    result = analyze_text(content)
+    return jsonify(result), 200
+
+# ---- CREATE: crear post (con moderación obligatoria)
 @forum_bp.post("/posts")
 @login_required
 def create_post():
@@ -32,12 +42,20 @@ def create_post():
     if not content:
         return jsonify({"error": "El contenido no puede estar vacío."}), 400
 
+    mod = analyze_text(content)
+    if mod["label"] != "positive":
+        return jsonify({
+            "allowed": False,
+            "reason": "El mensaje no cumple el tono positivo/constructivo.",
+            "analysis": mod
+        }), 400
+
     post = Post(user_id=current_user.id, content=content)
     db.session.add(post)
     db.session.commit()
-    return jsonify({"id": post.id}), 201
+    return jsonify({"id": post.id, "allowed": True}), 201
 
-# ---- UPDATE: actualizar post propio
+# ---- UPDATE: actualizar post propio (con moderación)
 @forum_bp.put("/posts/<int:post_id>")
 @login_required
 def update_post(post_id):
@@ -50,9 +68,13 @@ def update_post(post_id):
     if not content:
         return jsonify({"error": "El contenido no puede estar vacío."}), 400
 
+    mod = analyze_text(content)
+    if mod["label"] != "positive":
+        return jsonify({"allowed": False, "analysis": mod}), 400
+
     post.content = content
     db.session.commit()
-    return jsonify({"ok": True}), 200
+    return jsonify({"ok": True, "allowed": True}), 200
 
 # ---- DELETE: borrar post propio
 @forum_bp.delete("/posts/<int:post_id>")

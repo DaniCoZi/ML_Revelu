@@ -3,50 +3,43 @@ from __future__ import annotations
 import threading
 from typing import Dict, Any
 
-# Cargamos perezosamente (evita costo al boot)
 _analyzers_lock = threading.Lock()
 ANALYZERS: Dict[str, Any] = {"sentiment": None, "toxicity": None, "hate": None}
 
 def _load_analyzers():
+    """Carga perezosa los analizadores de pysentimiento (ES)."""
     with _analyzers_lock:
         if ANALYZERS["sentiment"] is None:
             from pysentimiento import create_analyzer
-            ANALYZERS["sentiment"] = create_analyzer(task="sentiment", lang="es")
-            # toxicity y hate speech están entrenados para español
-            ANALYZERS["toxicity"]  = create_analyzer(task="toxicity", lang="es")
+            ANALYZERS["sentiment"] = create_analyzer(task="sentiment",   lang="es")
+            ANALYZERS["toxicity"]  = create_analyzer(task="toxicity",    lang="es")
             ANALYZERS["hate"]      = create_analyzer(task="hate_speech", lang="es")
 
 def analyze_text(text: str) -> dict:
     """
-    Usa pysentimiento para:
-      - sentiment: POS, NEU, NEG (+ probabilidades)
-      - toxicity: TOXIC vs NOT_TOXIC (+ score)
-      - hate speech: HATE vs NOT_HATE (+ score)
-    Devuelve un dict con label 'positive'/'negative', score [-1..1], reasons y suggestions.
+    Devuelve {
+      label: 'positive'|'negative',
+      score: float [-1..1],
+      sentiment: {...}, toxicity: 'TOXIC'|'NOT_TOXIC', hate: 'HATE'|'NOT_HATE',
+      reasons: [str], suggestions: [str]
+    }
     """
     t = (text or "").strip()
     if not t:
         return {
-            "label": "negative",
-            "score": -1.0,
-            "reasons": ["Mensaje vacío"],
-            "suggestions": ["Escribe un mensaje con contexto y una propuesta concreta."]
+            "label":"negative", "score":-1.0,
+            "reasons":["Mensaje vacío"],
+            "suggestions":["Escribe un mensaje con contexto y una propuesta concreta."]
         }
 
     try:
         _load_analyzers()
-        sa   = ANALYZERS["sentiment"].predict(t)   # .output: POS/NEG/NEU, .probas: dict
-        tox  = ANALYZERS["toxicity"].predict(t)    # .output: TOXIC/NOT_TOXIC
-        hate = ANALYZERS["hate"].predict(t)        # .output: HATE/NOT_HATE
+        sa   = ANALYZERS["sentiment"].predict(t)  # .output: POS/NEG/NEU ; .probas: dict
+        tox  = ANALYZERS["toxicity"].predict(t)   # .output: TOXIC/NOT_TOXIC
+        hate = ANALYZERS["hate"].predict(t)       # .output: HATE/NOT_HATE
 
-        # Puntaje agregado
-        # base: +1 si POS, -1 si NEG, 0 si NEU (suavizado con probas)
-        base = (
-            sa.probas.get("POS", 0) -
-            sa.probas.get("NEG", 0)
-        )  # en [-1..1] aprox
+        base = sa.probas.get("POS", 0) - sa.probas.get("NEG", 0)  # aprox [-1..1]
 
-        # Penalizaciones si hay toxicidad/odio
         penalty = 0.0
         reasons = []
         if tox.output == "TOXIC":
@@ -57,8 +50,6 @@ def analyze_text(text: str) -> dict:
             reasons.append("Se detectó discurso de odio.")
 
         score = max(-1.0, min(1.0, base + penalty))
-
-        # Umbral: exigimos tono ≥ 0.15 y sin flags TOXIC/HATE
         positive = (score >= 0.15) and tox.output != "TOXIC" and hate.output != "HATE"
 
         if sa.output == "NEG":
@@ -84,12 +75,10 @@ def analyze_text(text: str) -> dict:
             "reasons": reasons,
             "suggestions": suggestions,
         }
-
     except Exception as e:
-        # Fallback seguro si el modelo no carga en el server
+        # Fallback seguro si el modelo no carga
         return {
-            "label": "negative",
-            "score": -1.0,
-            "reasons": [f"Moderador no disponible: {e}"],
-            "suggestions": ["Temporalmente no se puede moderar. Intenta con un tono constructivo y vuelve a enviar."]
+            "label":"negative", "score":-1.0,
+            "reasons":[f"Moderador no disponible: {e}"],
+            "suggestions":["Temporalmente no se puede moderar. Intenta con un tono constructivo y vuelve a enviar."]
         }
