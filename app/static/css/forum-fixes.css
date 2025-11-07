@@ -99,3 +99,96 @@ header .brand {font-size: 0 !important;}
 /* Header del foro un poco más compacto */
 .navbar { padding: 12px 16px; }
 .search-box { margin-top: 8px; margin-bottom: 18px; }
+
+
+
+/* === Header: botón hamburguesa circular === */
+.bar-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0 !important;
+  border-radius: 9999px !important;   /* círculo */
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--forum-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
+  border: 0 !important;
+}
+.bar-icon i { font-size: 20px; line-height: 1; }
+
+
+
+/* === Bootstrap Icons: forzar ruta absoluta de fuente === */
+@font-face {
+  font-family: "bootstrap-icons";
+  src: url("/static/fonts/bootstrap-icons.woff2") format("woff2"),
+       url("/static/fonts/bootstrap-icons.woff") format("woff");
+  font-display: swap;
+}
+.bi::before { font-family: "bootstrap-icons" !important; }
+
+
+
+
+
+/* === Search box: input/select sin borde raro y con focus suave === */
+.search-box select,
+.search-box input[type="text"] {
+  border: 1px solid rgba(var(--forum-primary-rgb), .14) !important;
+  background: rgba(var(--forum-primary-rgb), .12) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+}
+
+/* Efecto de enfoque sutil */
+.search-box select:focus,
+.search-box input[type="text"]:focus {
+  border-color: rgba(var(--forum-primary-rgb), .3) !important;
+  box-shadow: 0 0 0 4px rgba(var(--forum-primary-rgb), .10) !important;
+  background: rgba(var(--forum-primary-rgb), .16) !important;
+}
+
+/* Botón de buscar redondo */
+.search-box button {
+  width: 48px;
+  height: 48px;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--forum-primary) !important;
+  border: 0 !important; color: #fff !important;
+  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
+}
+
+/* === Select con flecha bonita (sin contorno nativo) === */
+.search-box select {
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  padding-right: 44px !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23121a3a'%3E%3Cpath d='M3.2 5.6l4.8 4.8 4.8-4.8' stroke='%23121a3a' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+/* (Edge/IE) ocultar flecha nativa */
+.search-box select::-ms-expand { display: none; }
+
+/* Menú desplegable más claro (limitado por el sistema, pero mejora el contraste) */
+select option {
+  background: #f6f8fc;
+  color: #0f172a;
+}
+
+
+/* Uniformar radios / sombras */
+.subforum,
+.subforum .subforum-title,
+.posts-table .table-head,
+.posts-table .table-row,
+.topic-container,
+.search-box > div {
+  border-radius: 16px !important;
+}
