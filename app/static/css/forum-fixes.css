@@ -1,225 +1,48 @@
-/* --- Aísla el CSS del foro para no romper tu header y navbar --- */
-
-/* Restaura el ancho de tus contenedores de header/navbar/footer */
+/* --- Aísla el CSS del foro para no romper header/navbar del sitio --- */
 .topbar .container,
 .nav-bar .container,
 footer .container {
   width: 100% !important;
-  max-width: 1140px !important; /* o 1320 si usas container-xl en Bootstrap */
+  max-width: 1140px !important; /* 1320px si usas container-xl */
   margin: 0 auto !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
 }
-
-/* Asegura que el logo y el menú sigan usando su flex original */
 .navbar .navbar-nav { display: flex !important; }
 .navbar .navbar-nav .nav-link { display: block; }
-
-/* Opcional: evita que .container del foro afecte el modal */
+/* Evita que estilos del foro afecten modales globales */
 .modal .container { width: auto !important; max-width: none !important; }
 
-/* (si tu Footer tiene otra clase, añádela arriba en el bloque de footer) */
-
-
 /* ============================
-   FORO: Colores alineados al sitio
-   Usa las variables Bootstrap del tema principal
+   Colores alineados al tema del sitio
    ============================ */
-
-/* Fallback por si no hay --bs-primary (ej. sin bootstrap custom) */
-:root {
+:root{
+  /* Fallback si no existen variables de Bootstrap */
   --forum-primary: var(--bs-primary, #0d6efd);
   --forum-primary-rgb: var(--bs-primary-rgb, 13,110,253);
 }
 
 /* Marca / logo del foro */
-.brand-logo {
-  height: 45px;
-  display: block;
-}
-.brand-link { display: inline-flex; align-items: center; }
+.brand-link{ display:inline-flex; align-items:center; }
+.brand-logo{ height:45px; display:block; }
 
-/* Barra de búsquedas y pill superior */
-.search-box > div {
+/* Header del foro (espaciado ligero para respirar) */
+.navbar{ padding:12px 16px; }
+
+/* ============================
+   Buscador / filtros
+   ============================ */
+.search-box{ margin-top:8px; margin-bottom:18px; }
+
+/* Contenedor “pill” del buscador */
+.search-box > div{
   background: rgba(var(--forum-primary-rgb), .08) !important;
   border: 1px solid rgba(var(--forum-primary-rgb), .12) !important;
   box-shadow: 0 8px 30px rgba(0,0,0,.04);
-}
-
-/* Select, input y botón de búsqueda */
-.search-box select,
-.search-box input[type="text"] {
-  border: 1px solid rgba(var(--forum-primary-rgb), .18) !important;
-}
-.search-box button {
-  background: var(--forum-primary) !important;
-  border-color: var(--forum-primary) !important;
-  color: #fff !important;
-}
-
-/* Tarjeta de “Publicaciones recientes” (tira superior) */
-.subforum .subforum-title {
-  background: rgba(var(--forum-primary-rgb), .16) !important;
-  color: #0f172a; /* texto oscuro para contraste */
-}
-
-/* Link “Ver publicaciones” */
-.subforum-info a { color: var(--forum-primary) !important; }
-
-/* Íconos y enlaces por defecto del foro */
-a { color: var(--forum-primary); }
-a:hover { color: color-mix(in srgb, var(--forum-primary) 88%, black); }
-
-/* Tabla de posts: cabecera */
-.posts-table .table-head {
-  background: rgba(var(--forum-primary-rgb), .10) !important;
-  border: 1px solid rgba(var(--forum-primary-rgb), .12) !important;
-}
-
-/* Badges/estadísticas (nota inferior) */
-.note i { color: var(--forum-primary); }
-
-/* Botón/estado o acentos (si aparecieran) */
-.status i { color: var(--forum-primary); }
-
-/* Sombreado general de tarjetas del foro */
-.subforum,
-.posts-table,
-.topic-container {
-  box-shadow: 0 10px 35px rgba(0,0,0,.04);
-}
-
-/* Quita cualquier título H1 gigante que haya quedado en el header del foro */
-header .brand {font-size: 0 !important;}
-
-
-/* ============================
-   FORO: Ajustes de espaciado
-   ============================ */
-/* Header del foro un poco más compacto */
-.navbar { padding: 12px 16px; }
-.search-box { margin-top: 8px; margin-bottom: 18px; }
-
-
-
-/* === Header: botón hamburguesa circular === */
-.bar-icon {
-  width: 44px;
-  height: 44px;
-  padding: 0 !important;
-  border-radius: 9999px !important;   /* círculo */
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  background: var(--forum-primary) !important;
-  color: #fff !important;
-  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
-  border: 0 !important;
-}
-.bar-icon i { font-size: 20px; line-height: 1; }
-
-
-
-/* === Bootstrap Icons: forzar ruta absoluta de fuente === */
-@font-face {
-  font-family: "bootstrap-icons";
-  src: url("/static/fonts/bootstrap-icons.woff2") format("woff2"),
-       url("/static/fonts/bootstrap-icons.woff") format("woff");
-  font-display: swap;
-}
-.bi::before { font-family: "bootstrap-icons" !important; }
-
-
-
-
-
-/* === Search box: input/select sin borde raro y con focus suave === */
-.search-box select,
-.search-box input[type="text"] {
-  border: 1px solid rgba(var(--forum-primary-rgb), .14) !important;
-  background: rgba(var(--forum-primary-rgb), .12) !important;
-  outline: none !important;
-  box-shadow: none !important;
-  border-radius: 14px !important;
-  height: 48px !important;
-}
-
-/* Efecto de enfoque sutil */
-.search-box select:focus,
-.search-box input[type="text"]:focus {
-  border-color: rgba(var(--forum-primary-rgb), .3) !important;
-  box-shadow: 0 0 0 4px rgba(var(--forum-primary-rgb), .10) !important;
-  background: rgba(var(--forum-primary-rgb), .16) !important;
-}
-
-/* Botón de buscar redondo */
-.search-box button {
-  width: 48px;
-  height: 48px;
-  padding: 0 !important;
-  border-radius: 9999px !important;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--forum-primary) !important;
-  border: 0 !important; color: #fff !important;
-  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
-}
-
-/* === Select con flecha bonita (sin contorno nativo) === */
-.search-box select {
-  -webkit-appearance: none; -moz-appearance: none; appearance: none;
-  padding-right: 44px !important;
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23121a3a'%3E%3Cpath d='M3.2 5.6l4.8 4.8 4.8-4.8' stroke='%23121a3a' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-}
-
-/* (Edge/IE) ocultar flecha nativa */
-.search-box select::-ms-expand { display: none; }
-
-/* Menú desplegable más claro (limitado por el sistema, pero mejora el contraste) */
-select option {
-  background: #f6f8fc;
-  color: #0f172a;
-}
-
-
-/* Uniformar radios / sombras */
-.subforum,
-.subforum .subforum-title,
-.posts-table .table-head,
-.posts-table .table-row,
-.topic-container,
-.search-box > div {
   border-radius: 16px !important;
 }
 
-/* Botón del header circular */
-.bar-icon{
-  width: 44px;
-  height: 44px;
-  padding: 0 !important;
-  border-radius: 9999px !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  background: var(--forum-primary) !important;
-  color: #fff !important;
-  border: 0 !important;
-  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
-}
-.bar-icon i{ font-size: 20px; line-height: 1; }
-
-/* Asegurar carga de Bootstrap Icons */
-@font-face{
-  font-family: "bootstrap-icons";
-  src: url("/static/fonts/bootstrap-icons.woff2") format("woff2"),
-       url("/static/fonts/bootstrap-icons.woff")  format("woff");
-  font-display: swap;
-}
-.bi::before{ font-family: "bootstrap-icons" !important; }
-
-
-/* Input y select con borde suave y sin “outline” feo */
+/* Campos */
 .search-box select,
 .search-box input[type="text"]{
   border: 1px solid rgba(var(--forum-primary-rgb), .14) !important;
@@ -229,8 +52,6 @@ select option {
   border-radius: 14px !important;
   height: 48px !important;
 }
-
-/* Enfoque sutil (no cambia layout) */
 .search-box select:focus,
 .search-box input[type="text"]:focus{
   border-color: rgba(var(--forum-primary-rgb), .3) !important;
@@ -238,21 +59,85 @@ select option {
   background: rgba(var(--forum-primary-rgb), .16) !important;
 }
 
-/* Botón buscar redondo */
+/* Botón buscar: circular */
 .search-box button{
-  width: 48px; height: 48px; padding: 0 !important;
-  border-radius: 9999px !important; border: 0 !important;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--forum-primary) !important; color:#fff !important;
+  width:48px; height:48px; padding:0 !important;
+  border-radius:9999px !important;
+  display:inline-flex; align-items:center; justify-content:center;
+  background: var(--forum-primary) !important;
+  border:0 !important; color:#fff !important;
   box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
 }
 
-/* Flecha del select (sin tocar el dropdown del SO) */
+/* Select con flecha (sin outline nativo) */
 .search-box select{
-  -webkit-appearance: none; -moz-appearance: none; appearance: none;
-  padding-right: 44px !important;
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23121a3a'%3E%3Cpath d='M3.2 5.6l4.8 4.8 4.8-4.8' stroke='%23121a3a' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
+  -webkit-appearance:none; -moz-appearance:none; appearance:none;
+  padding-right:44px !important;
+  background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23121a3a'%3E%3Cpath d='M3.2 5.6l4.8 4.8 4.8-4.8' stroke='%23121a3a' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
 }
-.search-box select::-ms-expand{ display: none; }
+.search-box select::-ms-expand{ display:none; }
+/* Nota: el menú del <select> lo pinta el sistema; sólo mejoramos contraste */
+select option{ background:#f6f8fc; color:#0f172a; }
+
+/* ============================
+   Componentes del foro
+   ============================ */
+.subforum .subforum-title{
+  background: rgba(var(--forum-primary-rgb), .16) !important;
+  color:#0f172a;
+}
+.subforum,
+.posts-table,
+.topic-container{ box-shadow:0 10px 35px rgba(0,0,0,.04); }
+
+/* Tabla de posts: cabecera */
+.posts-table .table-head{
+  background: rgba(var(--forum-primary-rgb), .10) !important;
+  border: 1px solid rgba(var(--forum-primary-rgb), .12) !important;
+}
+
+/* Enlaces y acentos */
+a{ color: var(--forum-primary); }
+a:hover{
+  /* color-mix tiene soporte moderno; si no, el navegador ignora y mantiene color */
+  color: color-mix(in srgb, var(--forum-primary) 88%, black);
+}
+.note i,
+.status i{ color: var(--forum-primary); }
+
+/* Radios uniformes para el look */
+.subforum,
+.subforum .subforum-title,
+.posts-table .table-head,
+.posts-table .table-row,
+.topic-container,
+.search-box > div{ border-radius:16px !important; }
+
+/* Quita cualquier H1 residual del header del foro */
+header .brand{ font-size:0 !important; }
+
+/* ============================
+   Botón hamburguesa circular (sin cambiar layout)
+   ============================ */
+.bar-icon{
+  width:44px; height:44px; padding:0 !important;
+  border-radius:9999px !important;
+  display:inline-flex !important; align-items:center; justify-content:center;
+  background: var(--forum-primary) !important;
+  color:#fff !important; border:0 !important;
+  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
+}
+.bar-icon i{ font-size:20px; line-height:1; }
+
+/* ============================
+   Bootstrap Icons: asegurar fuente
+   ============================ */
+@font-face{
+  font-family:"bootstrap-icons";
+  src: url("/static/fonts/bootstrap-icons.woff2") format("woff2"),
+       url("/static/fonts/bootstrap-icons.woff")  format("woff");
+  font-display: swap;
+}
+.bi::before{ font-family:"bootstrap-icons" !important; }
