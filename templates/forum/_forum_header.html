@@ -17,7 +17,22 @@
       <i class="bi bi-list"></i>
     </a>
 
-    <div class="brand">Master Web Studio</div>
+    <!-- antes -->
+    <!-- <div class="brand">Master Web Studio</div> -->
+
+    <!-- después -->
+    <div class="brand">
+      <a href="{{ url_for('auth.dashboard') }}" class="brand-link" aria-label="Ir a foros">
+        <img
+          src="{{ url_for('static', filename='img/Logo.png') }}"
+          alt="Master Web Studio"
+          class="brand-logo"
+          decoding="async"
+          height="45"
+        >
+      </a>
+    </div>
+
   </div>
 
   <!-- SearchBox -->

@@ -19,3 +19,83 @@ footer .container {
 .modal .container { width: auto !important; max-width: none !important; }
 
 /* (si tu Footer tiene otra clase, añádela arriba en el bloque de footer) */
+
+
+/* ============================
+   FORO: Colores alineados al sitio
+   Usa las variables Bootstrap del tema principal
+   ============================ */
+
+/* Fallback por si no hay --bs-primary (ej. sin bootstrap custom) */
+:root {
+  --forum-primary: var(--bs-primary, #0d6efd);
+  --forum-primary-rgb: var(--bs-primary-rgb, 13,110,253);
+}
+
+/* Marca / logo del foro */
+.brand-logo {
+  height: 45px;
+  display: block;
+}
+.brand-link { display: inline-flex; align-items: center; }
+
+/* Barra de búsquedas y pill superior */
+.search-box > div {
+  background: rgba(var(--forum-primary-rgb), .08) !important;
+  border: 1px solid rgba(var(--forum-primary-rgb), .12) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.04);
+}
+
+/* Select, input y botón de búsqueda */
+.search-box select,
+.search-box input[type="text"] {
+  border: 1px solid rgba(var(--forum-primary-rgb), .18) !important;
+}
+.search-box button {
+  background: var(--forum-primary) !important;
+  border-color: var(--forum-primary) !important;
+  color: #fff !important;
+}
+
+/* Tarjeta de “Publicaciones recientes” (tira superior) */
+.subforum .subforum-title {
+  background: rgba(var(--forum-primary-rgb), .16) !important;
+  color: #0f172a; /* texto oscuro para contraste */
+}
+
+/* Link “Ver publicaciones” */
+.subforum-info a { color: var(--forum-primary) !important; }
+
+/* Íconos y enlaces por defecto del foro */
+a { color: var(--forum-primary); }
+a:hover { color: color-mix(in srgb, var(--forum-primary) 88%, black); }
+
+/* Tabla de posts: cabecera */
+.posts-table .table-head {
+  background: rgba(var(--forum-primary-rgb), .10) !important;
+  border: 1px solid rgba(var(--forum-primary-rgb), .12) !important;
+}
+
+/* Badges/estadísticas (nota inferior) */
+.note i { color: var(--forum-primary); }
+
+/* Botón/estado o acentos (si aparecieran) */
+.status i { color: var(--forum-primary); }
+
+/* Sombreado general de tarjetas del foro */
+.subforum,
+.posts-table,
+.topic-container {
+  box-shadow: 0 10px 35px rgba(0,0,0,.04);
+}
+
+/* Quita cualquier título H1 gigante que haya quedado en el header del foro */
+header .brand {font-size: 0 !important;}
+
+
+/* ============================
+   FORO: Ajustes de espaciado
+   ============================ */
+/* Header del foro un poco más compacto */
+.navbar { padding: 12px 16px; }
+.search-box { margin-top: 8px; margin-bottom: 18px; }
