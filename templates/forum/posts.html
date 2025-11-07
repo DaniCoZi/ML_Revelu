@@ -6,30 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page_title }}</title>
 
-  <!-- 1. CSS global de tu sitio (bootstrap.min.css / style.css si aplica) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <!-- 2. CSS del foro -->
+
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/layout.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/forums.css') }}">  <!-- o posts.css / detail.css -->
-  <!-- 3. FIXES para no romper el header/nav del sitio -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/posts.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/forum-fixes.css') }}">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
 </head>
 <body>
-  {% include "header.html" %}
+
+  {% include "forum/_forum_header.html" %}
 
   <div class="container">
-    <!--Navigation-->
     <div class="navigate">
-      <span><a href="{{ url_for('auth.dashboard') }}">Comunidad</a> <i class="fa fa-angle-right"></i> <a>Publicaciones</a></span>
+      <span><a href="{{ url_for('auth.dashboard') }}">Comunidad</a> <i class="bi bi-chevron-right"></i> <a>Publicaciones</a></span>
     </div>
 
-    <!--Display posts table-->
     <div class="posts-table">
       <div class="table-head">
         <div class="status">Estado</div>
@@ -37,51 +34,51 @@
         <div class="replies">Respuestas/Vistas</div>
         <div class="last-reply">Última actualización</div>
       </div>
-      <!-- filas dinámicas -->
       <div id="rows"></div>
     </div>
 
-    <!--Pagination (placeholder) -->
     <div class="pagination" id="pager" style="display:none;"></div>
   </div>
 
   <div class="note">
-    <span><i class="fa fa-fire"></i>&nbsp; Los temas con más actividad aparecerán arriba.</span>
+    <span><i class="bi bi-emoji-frown"></i>&nbsp; Tema sin interacción</span>&nbsp;&nbsp;&nbsp;<a href="#"><i class="bi bi-share"></i></a><br>
+    <span><i class="bi bi-book"></i>&nbsp; Tema de baja interacción</span>&nbsp;&nbsp;&nbsp;<a href="#"><i class="bi bi-share"></i></a><br>
+    <span><i class="bi bi-fire"></i>&nbsp; Tema popular</span>&nbsp;&nbsp;&nbsp;<a href="#"><i class="bi bi-share"></i></a><br>
+    <span><i class="bi bi-rocket"></i>&nbsp; Tema de alta interacción</span>&nbsp;&nbsp;&nbsp;<a href="#"><i class="bi bi-share"></i></a><br>
+    <span><i class="bi bi-lock"></i>&nbsp; Tema cerrado</span>&nbsp;&nbsp;&nbsp;<a href="#"><i class="bi bi-share"></i></a><br>
   </div>
 
-  {% include "Footer.html" ignore missing %}
+  {% include "forum/_forum_footer.html" %}
 
   <script>
-  (async function(){
-    const rows = document.getElementById('rows');
-    function esc(s){ return (s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
-
-    try{
-      const res = await fetch('/api/posts');
-      const data = await res.json();
-      if(!Array.isArray(data) || !data.length){
-        rows.innerHTML = '<div class="table-row"><div class="subjects">No hay publicaciones aún.</div></div>';
-        return;
+    (async ()=>{
+      const rows = document.getElementById('rows');
+      const esc = s => (s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+      try{
+        const r = await fetch('/api/posts');
+        const data = await r.json();
+        if(!Array.isArray(data) || !data.length){
+          rows.innerHTML = '<div class="table-row"><div class="subjects">No hay publicaciones aún.</div></div>';
+          return;
+        }
+        rows.innerHTML = data.map(p => {
+          const created = new Date(p.created_at).toLocaleString();
+          const href = "{{ url_for('auth.dashboard_detail', post_id=0) }}".replace('0', p.id);
+          return `
+            <div class="table-row">
+              <div class="status"><i class="bi bi-chat-dots"></i></div>
+              <div class="subjects">
+                <a href="${href}">${esc(p.content).slice(0,120)}${p.content.length>120?'…':''}</a>
+                <br><span>por ${esc(p.author || 'Usuario')}</span>
+              </div>
+              <div class="replies">—</div>
+              <div class="last-reply">${created}</div>
+            </div>`;
+        }).join('');
+      }catch(e){
+        rows.innerHTML = '<div class="table-row"><div class="subjects">Error cargando publicaciones.</div></div>';
       }
-      // Render
-      rows.innerHTML = data.map(p => {
-        const created = new Date(p.created_at).toLocaleString();
-        return `
-          <div class="table-row">
-            <div class="status"><i class="fa fa-comments-o" aria-hidden="true"></i></div>
-            <div class="subjects">
-              <a href="{{ url_for('auth.dashboard_detail', post_id='__ID__') }}".replace('__ID__', p.id)>${esc(p.content).slice(0,120)}${p.content.length>120?'…':''}</a>
-              <br><span>por ${esc(p.author || 'Usuario')}</span>
-            </div>
-            <div class="replies">—</div>
-            <div class="last-reply">${created}</div>
-          </div>
-        `;
-      }).join('');
-    }catch(e){
-      rows.innerHTML = '<div class="table-row"><div class="subjects">Error cargando publicaciones.</div></div>';
-    }
-  })();
+    })();
   </script>
 </body>
 </html>

@@ -6,47 +6,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page_title }}</title>
 
-  <!-- 1. CSS global de tu sitio (bootstrap.min.css / style.css si aplica) -->
+  <!-- CSS del sitio -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <!-- 2. CSS del foro -->
+
+  <!-- CSS del foro -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/layout.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/forums.css') }}">  <!-- o posts.css / detail.css -->
-  <!-- 3. FIXES para no romper el header/nav del sitio -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/forum-fixes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/forums.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/forum-fixes.css') }}"><!-- aislar estilos -->
 
-  <!-- Iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Bootstrap Icons local -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
 
-  <!-- Fuente -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
 </head>
 <body>
-  {% include "header.html" %}
+
+  {% include "forum/_forum_header.html" %}
 
   <div class="container">
-    <!-- Puedes reemplazar esto por subforos reales en el futuro -->
-    <div class="subforum">
-      <div class="subforum-title">
-        <h1>Publicaciones recientes</h1>
-      </div>
+    <div id="subforums-container">
+      <!-- Puedes reemplazar esto por categorías reales.
+           De momento mostramos una tarjeta de acceso a Posts. -->
+      <div class="subforum">
+        <div class="subforum-title"><h1>Publicaciones recientes</h1></div>
 
-      <div class="subforum-row">
-        <div class="subforum-column subforum-icon center">
-          <i class="fa fa-comments"></i>
-        </div>
-        <div class="subforum-column subforum-description">
-          <h4>Foro general</h4>
-          <p>Comparte ideas, dudas y novedades de la comunidad.</p>
-        </div>
-        <div class="subforum-column subforum-stats center">
-          <span id="statsCount">—</span>
-        </div>
-        <div class="subforum-column subforum-info">
-          <a href="{{ url_for('auth.dashboard_posts') }}">Ver publicaciones →</a>
-          <br><span>Últimas actualizaciones de la comunidad</span>
+        <div class="subforum-row">
+          <div class="subforum-icon subforum-column center">
+            <i class="bi bi-chat-dots"></i>
+          </div>
+          <div class="subforum-description subforum-column">
+            <h4><a href="{{ url_for('auth.dashboard_posts') }}">Foro general</a></h4>
+            <p>Comparte ideas, dudas y novedades de la comunidad.</p>
+          </div>
+          <div class="subforum-stats subforum-column center">
+            <span id="statsCount">—</span>
+          </div>
+          <div class="subforum-info subforum-column">
+            <b><a href="{{ url_for('auth.dashboard_posts') }}">Ver publicaciones →</a></b>
+            <br><span>Últimas actualizaciones de la comunidad</span>
+          </div>
         </div>
       </div>
     </div>
@@ -55,28 +56,28 @@
   <!-- Info -->
   <div class="forum-info">
     <div class="chart">
-      Master Web Studio — Estadísticas &nbsp;<i class="fa fa-bar-chart"></i>
+      Master Web Studio — Estadísticas &nbsp;<i class="bi bi-bar-chart"></i>
     </div>
     <span id="statsLine">Cargando estadísticas…</span><br>
     <span>Consulta <a href="{{ url_for('auth.dashboard_posts') }}">las publicaciones más recientes</a>.</span><br>
   </div>
 
-  {% include "Footer.html" ignore missing %}
+  {% include "forum/_forum_footer.html" %}
 
   <script>
-  // Pequeño fetch para mostrar conteo básico (post count)
-  (async function(){
-    try{
-      const res = await fetch('/api/posts');
-      const data = await res.json();
-      const count = Array.isArray(data) ? data.length : 0;
-      document.getElementById('statsCount').textContent = count + ' posts';
-      document.getElementById('statsLine').textContent = `Tenemos ${count} publicaciones en la comunidad.`;
-    }catch(e){
-      document.getElementById('statsCount').textContent = '—';
-      document.getElementById('statsLine').textContent = 'No se pudieron cargar las estadísticas.';
-    }
-  })();
+    // pequeño conteo desde tu API real
+    (async ()=>{
+      try{
+        const r = await fetch('/api/posts');
+        const data = await r.json();
+        const count = Array.isArray(data) ? data.length : 0;
+        document.getElementById('statsCount').textContent = count + ' posts';
+        document.getElementById('statsLine').textContent = `Tenemos ${count} publicaciones en la comunidad.`;
+      }catch(e){
+        document.getElementById('statsCount').textContent = '—';
+        document.getElementById('statsLine').textContent = 'No se pudieron cargar las estadísticas.';
+      }
+    })();
   </script>
 </body>
 </html>

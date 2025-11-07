@@ -6,27 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page_title }}</title>
 
-  <!-- 1. CSS global de tu sitio (bootstrap.min.css / style.css si aplica) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <!-- 2. CSS del foro -->
+
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/layout.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/forums.css') }}">  <!-- o posts.css / detail.css -->
-  <!-- 3. FIXES para no romper el header/nav del sitio -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/detail.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/forum-fixes.css') }}">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
 </head>
 <body>
-  {% include "header.html" %}
+
+  {% include "forum/_forum_header.html" %}
 
   <div class="container">
-    <!--Navigation-->
     <div class="navigate">
-      <a href="{{ url_for('auth.dashboard') }}">Comunidad</a> &raquo; <a href="{{ url_for('auth.dashboard_posts') }}">Publicaciones</a> &raquo; <span>Tema</span>
+      <span>
+        <a href="{{ url_for('auth.dashboard') }}">Comunidad</a> >>
+        <a href="{{ url_for('auth.dashboard_posts') }}">Publicaciones</a> >>
+        <a>Tema</a>
+      </span>
     </div>
 
     <div class="topic-container">
@@ -52,10 +54,8 @@
         </div>
       </div>
     </div>
-
-    <!-- (comentarios/replies a futuro) -->
   </div>
 
-  {% include "Footer.html" ignore missing %}
+  {% include "forum/_forum_footer.html" %}
 </body>
 </html>
