@@ -1,0 +1,21 @@
+/* --- Aísla el CSS del foro para no romper tu header y navbar --- */
+
+/* Restaura el ancho de tus contenedores de header/navbar/footer */
+.topbar .container,
+.nav-bar .container,
+footer .container {
+  width: 100% !important;
+  max-width: 1140px !important; /* o 1320 si usas container-xl en Bootstrap */
+  margin: 0 auto !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+/* Asegura que el logo y el menú sigan usando su flex original */
+.navbar .navbar-nav { display: flex !important; }
+.navbar .navbar-nav .nav-link { display: block; }
+
+/* Opcional: evita que .container del foro afecte el modal */
+.modal .container { width: auto !important; max-width: none !important; }
+
+/* (si tu Footer tiene otra clase, añádela arriba en el bloque de footer) */
