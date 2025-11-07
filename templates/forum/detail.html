@@ -1,62 +1,184 @@
-{% set page_title = "Master Web Studio | Detalle de tema" %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ page_title }}</title>
+{% include 'forum/_forum_header.html' %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<div class="container">
+  <!-- TABS / breadcrumbs para mantener coherencia -->
+  <div class="forum-breadcrumb mb-3">
+    <a href="{{ url_for('main.index') }}">Inicio</a> /
+    <a href="{{ url_for('auth.dashboard') }}">Comunidad</a> /
+    <span>Nueva publicación</span>
+  </div>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/detail.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/forum-fixes.css') }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  {% include "forum/_forum_header.html" %}
-
-  <div class="container">
-    <div class="navigate">
-      <span>
-        <a href="{{ url_for('auth.dashboard') }}">Comunidad</a> >>
-        <a href="{{ url_for('auth.dashboard_posts') }}">Publicaciones</a> >>
-        <a>Tema</a>
-      </span>
+  <!-- Tarjeta principal -->
+  <div class="topic-container">
+    <div class="subforum-title d-flex align-items-center justify-content-between">
+      <h3 class="m-0">Crear nueva publicación</h3>
+      <a class="btn btn-soft" href="{{ url_for('auth.dashboard') }}">
+        <i class="bi bi-arrow-left"></i> Volver
+      </a>
     </div>
 
-    <div class="topic-container">
-      <div class="head">
-        <div class="authors">Autor</div>
-        <div class="content">Tema: {{ post_title }}</div>
-      </div>
+    <div class="p-3 p-md-4">
+      <!-- Mensajes -->
+      <div id="alertArea" class="mb-3" style="display:none;"></div>
 
-      <div class="body">
-        <div class="authors">
-          <div class="username"><a>{{ post_author }}</a></div>
-          <div>Rol</div>
-          <img src="https://cdn.pixabay.com/photo/2015/11/06/13/27/ninja-1027877_960_720.jpg" alt="">
-          <div>Publicaciones: <u>—</u></div>
-          <div>Puntos: <u>—</u></div>
-        </div>
-        <div class="content">
-          {{ post_content }}
-          <br><hr>
-          <div class="comment">
-            <button disabled>Comentar (pronto)</button>
+      <!-- Formulario -->
+      <form id="postForm" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="content" class="form-label fw-semibold">Contenido</label>
+
+          <!-- textarea con aspecto coherente al resto del sitio -->
+          <textarea id="content"
+                    class="form-control textarea-like"
+                    placeholder="¿Qué quieres compartir con la comunidad?"
+                    rows="5"
+                    maxlength="2000"
+                    required></textarea>
+
+          <div class="form-text d-flex justify-content-between mt-1">
+            <span>Se amable y claro. Puedes editar luego.</span>
+            <span id="charCounter">0 / 2000</span>
+          </div>
+
+          <div class="invalid-feedback">
+            El contenido no puede estar vacío.
           </div>
         </div>
-      </div>
+
+        <div class="d-flex gap-2">
+          <button id="publishBtn" class="btn btn-primary" type="submit">
+            <i class="bi bi-send-fill me-1"></i> Publicar
+          </button>
+          <button id="clearBtn" class="btn btn-soft" type="button">
+            Limpiar
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
-  {% include "forum/_forum_footer.html" %}
-</body>
-</html>
+  <!-- (Opcional) tus últimas publicaciones para dar contexto -->
+  <div class="topic-container mt-4">
+    <div class="subforum-title">
+      <h4 class="m-0">Tus últimas publicaciones</h4>
+    </div>
+    <div class="p-3 p-md-4" id="myPosts">
+      <div class="muted">Cargando…</div>
+    </div>
+  </div>
+</div>
+
+{% include 'forum/_forum_footer.html' %}
+
+<script>
+(() => {
+  const ta        = document.getElementById('content');
+  const counter   = document.getElementById('charCounter');
+  const form      = document.getElementById('postForm');
+  const publishBtn= document.getElementById('publishBtn');
+  const clearBtn  = document.getElementById('clearBtn');
+  const alertArea = document.getElementById('alertArea');
+  const myPostsEl = document.getElementById('myPosts');
+
+  const MAX = 2000;
+
+  function showAlert(type, msg){
+    alertArea.style.display = '';
+    alertArea.className = `alert alert-${type}`;
+    alertArea.textContent = msg;
+  }
+  function hideAlert(){
+    alertArea.style.display = 'none';
+  }
+
+  function updateCounter(){
+    const len = (ta.value || '').length;
+    counter.textContent = `${len} / ${MAX}`;
+  }
+
+  // Auto-grow básico del textarea
+  function autoGrow(el){
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 360) + 'px';
+  }
+
+  ta.addEventListener('input', () => { updateCounter(); autoGrow(ta); });
+  window.addEventListener('load', () => { updateCounter(); autoGrow(ta); });
+
+  clearBtn.addEventListener('click', () => {
+    ta.value = '';
+    hideAlert();
+    updateCounter();
+    autoGrow(ta);
+    ta.focus();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert();
+
+    const value = (ta.value || '').trim();
+    if(!value){
+      ta.classList.add('is-invalid');
+      return;
+    }
+    ta.classList.remove('is-invalid');
+
+    publishBtn.disabled = true;
+    publishBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Publicando…';
+
+    try{
+      const r = await fetch('{{ url_for("forum.create_post")|replace("/api/posts","") }}/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: value })
+      });
+      if(!r.ok){
+        const data = await r.json().catch(()=>({}));
+        throw new Error(data.error || 'No se pudo publicar.');
+      }
+      showAlert('success', '¡Publicación creada con éxito!');
+      ta.value = '';
+      updateCounter();
+      autoGrow(ta);
+      // recargar últimas publicaciones
+      loadMyPosts();
+    }catch(err){
+      showAlert('danger', err.message || 'Error publicando.');
+    }finally{
+      publishBtn.disabled = false;
+      publishBtn.innerHTML = '<i class="bi bi-send-fill me-1"></i> Publicar';
+    }
+  });
+
+  async function loadMyPosts(){
+    try{
+      const res = await fetch('/api/posts');
+      const items = await res.json();
+      const my = (items || []).filter(p => p.editable).slice(0,5);
+
+      if(!my.length){
+        myPostsEl.innerHTML = '<div class="muted">Aún no tienes publicaciones.</div>';
+        return;
+      }
+      myPostsEl.innerHTML = my.map(p => `
+        <div class="post-card mb-2">
+          <div class="d-flex justify-content-between">
+            <div>
+              <strong>${p.author || 'Tú'}</strong>
+              <span class="post-meta"> · ${new Date(p.created_at).toLocaleString()}</span>
+            </div>
+            <div class="post-actions">
+              <a class="text-decoration-none" href="{{ url_for('auth.dashboard') }}"><i class="bi bi-chat-left-text me-1"></i>ver</a>
+            </div>
+          </div>
+          <div class="mt-1 post-content">${(p.content || '').replace(/[&<>]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))}</div>
+        </div>
+      `).join('');
+    }catch(e){
+      myPostsEl.innerHTML = '<div class="text-danger">No se pudieron cargar tus publicaciones.</div>';
+    }
+  }
+
+  loadMyPosts();
+})();
+</script>

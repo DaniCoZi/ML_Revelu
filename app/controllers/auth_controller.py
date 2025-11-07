@@ -129,3 +129,10 @@ def register():
             return render_template('register.html', nombre=nombre, email=email)
 
     return render_template('register.html')
+
+
+# Vista para crear publicación desde UI
+@forum_bp.get("/publicar")
+@login_required
+def publicar():
+    return render_template("forum/detail.html")
