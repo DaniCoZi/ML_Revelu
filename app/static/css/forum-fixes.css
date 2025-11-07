@@ -192,3 +192,123 @@ select option {
 .search-box > div {
   border-radius: 16px !important;
 }
+
+/* ============================
+   NAVBAR: evitar saltos al mostrar/ocultar
+   ============================ */
+
+/* Contenedor de la barra con altura fija para que no “salte” */
+.navbar{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px;
+  min-height: 56px;                 /* altura estable */
+}
+
+/* Botón hamburguesa (izquierda) — circular */
+.bar-icon{
+  width: 44px; height: 44px;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  background: var(--forum-primary) !important;
+  color: #fff !important; border: 0 !important;
+  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
+}
+.bar-icon:focus{ outline: none; box-shadow: 0 0 0 4px rgba(var(--forum-primary-rgb), .15); }
+.bar-icon i{ font-size: 20px; line-height: 1; }
+
+/* El bloque de navegación se posiciona absoluto para que no empuje nada */
+#navigation.navigation{
+  position: absolute;               /* CLAVE: no participa en el layout */
+  left: 64px;                       /* se coloca a la derecha del botón */
+  top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 12px 20px;
+  background: #fff;
+  border: 1px solid rgba(var(--forum-primary-rgb), .12);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.04);
+  transition: transform .22s ease, opacity .18s ease, visibility .18s;
+}
+
+/* Estado oculto: no recibe clicks y se desvanece, sin mover nada */
+#navigation.navigation.hide{
+  transform: translateY(-8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Estado visible: totalmente opaco */
+#navigation.navigation:not(.hide){
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Estilo de los enlaces del nav */
+#navigation .nav-list{ display: flex; gap: 18px; list-style: none; padding: 0; margin: 0; }
+#navigation .nav-item a{
+  text-decoration: none;
+  color: #0f172a;
+  font-weight: 600;
+}
+#navigation .nav-item a:hover{ color: var(--forum-primary); }
+
+/* Marca/logo a la derecha */
+.brand-logo{ height: 45px; display: block; }
+.brand-link{ display: inline-flex; align-items: center; }
+
+/* ============================
+   ÍCONOS (asegurar fuente BI)
+   ============================ */
+@font-face{
+  font-family: "bootstrap-icons";
+  src: url("/static/fonts/bootstrap-icons.woff2") format("woff2"),
+       url("/static/fonts/bootstrap-icons.woff")  format("woff");
+  font-display: swap;
+}
+.bi::before{ font-family: "bootstrap-icons" !important; }
+
+/* ============================
+   Search: input/select bonitos sin contorno duro
+   ============================ */
+.search-box select,
+.search-box input[type="text"]{
+  border: 1px solid rgba(var(--forum-primary-rgb), .14) !important;
+  background: rgba(var(--forum-primary-rgb), .12) !important;
+  outline: none !important; box-shadow: none !important;
+  border-radius: 14px !important; height: 48px !important;
+}
+.search-box select:focus,
+.search-box input[type="text"]:focus{
+  border-color: rgba(var(--forum-primary-rgb), .30) !important;
+  box-shadow: 0 0 0 4px rgba(var(--forum-primary-rgb), .10) !important;
+  background: rgba(var(--forum-primary-rgb), .16) !important;
+}
+.search-box button{
+  width: 48px; height: 48px; padding: 0 !important;
+  border-radius: 9999px !important; border: 0 !important;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--forum-primary) !important; color: #fff !important;
+  box-shadow: 0 10px 30px rgba(var(--forum-primary-rgb), .25);
+}
+
+/* Select con flecha SVG (sin contorno nativo) */
+.search-box select{
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  padding-right: 44px !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23121a3a'%3E%3Cpath d='M3.2 5.6l4.8 4.8 4.8-4.8' stroke='%23121a3a' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+.search-box select::-ms-expand{ display: none; }
+
+/* Opcional: opciones del desplegable más legibles (limitado por el SO) */
+select option{ background: #f6f8fc; color: #0f172a; }
