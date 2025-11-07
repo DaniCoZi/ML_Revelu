@@ -1,14 +1,18 @@
 # app/controllers/auth_controller.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.exc import IntegrityError
 from urllib.parse import urlparse, urljoin
 
 from app import db
 from app.models.user import User
+from app.models.post import Post  # 👈 Necesario para mostrar posts
 
 auth_bp = Blueprint('auth', __name__)
 
+# -------------------------
+# Función auxiliar
+# -------------------------
 def _is_safe_url(target: str) -> bool:
     if not target:
         return False
@@ -28,7 +32,7 @@ def login_page():
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
-            login_user(user)  # puedes pasar remember=bool si tienes checkbox
+            login_user(user)
             flash('¡Bienvenido!', 'success')
 
             next_page = request.args.get('next')
@@ -37,25 +41,47 @@ def login_page():
             return redirect(url_for('auth.dashboard'))
         else:
             flash('Correo o contraseña incorrectos', 'danger')
-            # No hacemos redirect para no perder el email
             return render_template('login.html', email=email)
 
-    # GET
     return render_template('login.html')
 
 # -------------------------
-# Dashboard (protegido)
+# Dashboard (ahora foro principal)
 # -------------------------
 @auth_bp.route('/dashboard')
 @login_required
 def dashboard():
+    """Portada principal del foro."""
     try:
-        return render_template('dashboard.html')
+        return render_template('forum/forums.html')  # 👈 Usa tu nueva plantilla
     except Exception as e:
         from flask import current_app
-        current_app.logger.exception("Error renderizando dashboard.html")
+        current_app.logger.exception("Error renderizando forums.html")
         return f"<pre>Dashboard ERROR:\n{e}</pre>", 500
 
+# -------------------------
+# Vista de publicaciones (listado)
+# -------------------------
+@auth_bp.route('/dashboard/posts')
+@login_required
+def dashboard_posts():
+    """Listado de publicaciones del foro."""
+    return render_template('forum/posts.html')
+
+# -------------------------
+# Detalle de publicación individual
+# -------------------------
+@auth_bp.route('/dashboard/posts/<int:post_id>')
+@login_required
+def dashboard_detail(post_id):
+    """Vista detalle de una publicación individual."""
+    post = Post.query.get_or_404(post_id)
+    return render_template(
+        'forum/detail.html',
+        post_title=(post.content[:42] + '…') if len(post.content) > 45 else post.content,
+        post_author=getattr(post.author, 'nombre', getattr(post.author, 'email', 'Usuario')),
+        post_content=post.content
+    )
 
 # -------------------------
 # Logout

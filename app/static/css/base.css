@@ -1,0 +1,66 @@
+/* ########################################### */
+/*                 Global                      */
+/* ########################################### */
+
+*, *::before, *::after{
+    box-sizing: border-box;
+}
+
+:root{
+    --color-background: #ffffff;
+    --color-background-alt: #1236ad52;
+    --color-surface: #ffffff;
+    --color-surface-soft: #eef3ff;
+    --color-border: rgba(46, 88, 148, 0.12);
+    --color-highlight: #3258d4;
+    --color-highlight-soft: #5f8dff;
+    --color-text: #1b2748;
+    --color-text-muted: #5b6886;
+    --shadow-soft: 0 10px 30px rgba(39, 76, 137, 0.08);
+}
+
+html{
+    font-size: 14px;
+    font-family: 'Titillium Web', sans-serif;
+    background: var(--color-background);
+    color: var(--color-text);
+}
+
+body{
+    margin: 0;
+    background: var(--color-background);
+    color: inherit;
+}
+
+a{
+    color: var(--color-highlight);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover,
+a:focus{
+    color: var(--color-highlight);
+}
+
+h1{
+    font-size:16px;
+    font-weight: bolder;
+}
+
+p{
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+hr{
+    border: none;
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, rgba(95, 141, 255, 0.35), transparent);
+}
+
+@font-face {
+    font-family:aquire;
+    src:url(../aquire.otf);
+}

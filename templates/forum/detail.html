@@ -1,0 +1,54 @@
+{% set page_title = "Master Web Studio | Detalle de tema" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page_title }}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/layout.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/detail.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
+</head>
+<body>
+  {% include "header.html" %}
+
+  <div class="container">
+    <!--Navigation-->
+    <div class="navigate">
+      <a href="{{ url_for('auth.dashboard') }}">Comunidad</a> &raquo; <a href="{{ url_for('auth.dashboard_posts') }}">Publicaciones</a> &raquo; <span>Tema</span>
+    </div>
+
+    <div class="topic-container">
+      <div class="head">
+        <div class="authors">Autor</div>
+        <div class="content">Tema: {{ post_title }}</div>
+      </div>
+
+      <div class="body">
+        <div class="authors">
+          <div class="username"><a>{{ post_author }}</a></div>
+          <div>Rol</div>
+          <img src="https://cdn.pixabay.com/photo/2015/11/06/13/27/ninja-1027877_960_720.jpg" alt="">
+          <div>Publicaciones: <u>—</u></div>
+          <div>Puntos: <u>—</u></div>
+        </div>
+        <div class="content">
+          {{ post_content }}
+          <br><hr>
+          <div class="comment">
+            <button disabled>Comentar (pronto)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- (comentarios/replies a futuro) -->
+  </div>
+
+  {% include "Footer.html" ignore missing %}
+</body>
+</html>

@@ -1,0 +1,80 @@
+{% set page_title = "Master Web Studio | Publicaciones" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page_title }}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/layout.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/posts.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
+</head>
+<body>
+  {% include "header.html" %}
+
+  <div class="container">
+    <!--Navigation-->
+    <div class="navigate">
+      <span><a href="{{ url_for('auth.dashboard') }}">Comunidad</a> <i class="fa fa-angle-right"></i> <a>Publicaciones</a></span>
+    </div>
+
+    <!--Display posts table-->
+    <div class="posts-table">
+      <div class="table-head">
+        <div class="status">Estado</div>
+        <div class="subjects">Temas</div>
+        <div class="replies">Respuestas/Vistas</div>
+        <div class="last-reply">Última actualización</div>
+      </div>
+      <!-- filas dinámicas -->
+      <div id="rows"></div>
+    </div>
+
+    <!--Pagination (placeholder) -->
+    <div class="pagination" id="pager" style="display:none;"></div>
+  </div>
+
+  <div class="note">
+    <span><i class="fa fa-fire"></i>&nbsp; Los temas con más actividad aparecerán arriba.</span>
+  </div>
+
+  {% include "Footer.html" ignore missing %}
+
+  <script>
+  (async function(){
+    const rows = document.getElementById('rows');
+    function esc(s){ return (s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+    try{
+      const res = await fetch('/api/posts');
+      const data = await res.json();
+      if(!Array.isArray(data) || !data.length){
+        rows.innerHTML = '<div class="table-row"><div class="subjects">No hay publicaciones aún.</div></div>';
+        return;
+      }
+      // Render
+      rows.innerHTML = data.map(p => {
+        const created = new Date(p.created_at).toLocaleString();
+        return `
+          <div class="table-row">
+            <div class="status"><i class="fa fa-comments-o" aria-hidden="true"></i></div>
+            <div class="subjects">
+              <a href="{{ url_for('auth.dashboard_detail', post_id='__ID__') }}".replace('__ID__', p.id)>${esc(p.content).slice(0,120)}${p.content.length>120?'…':''}</a>
+              <br><span>por ${esc(p.author || 'Usuario')}</span>
+            </div>
+            <div class="replies">—</div>
+            <div class="last-reply">${created}</div>
+          </div>
+        `;
+      }).join('');
+    }catch(e){
+      rows.innerHTML = '<div class="table-row"><div class="subjects">Error cargando publicaciones.</div></div>';
+    }
+  })();
+  </script>
+</body>
+</html>

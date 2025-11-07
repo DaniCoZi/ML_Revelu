@@ -1,0 +1,165 @@
+/* ########################################### */
+/*            posts.html                       */
+/* ########################################### */
+.table-head{
+    display: flex;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.table-head div{
+    padding: 16px;
+    margin: 0;
+    background: var(--color-background-alt);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: 1px solid var(--color-border);
+}
+
+.table-head .status{
+    flex: 5%;
+}
+
+.table-head .subjects{
+    flex: 65%;
+}
+
+.table-head .replies{
+    flex: 15%;
+}
+
+.table-head .last-reply{
+    flex: 15%;
+}
+
+.table-row{
+    display: flex;
+    margin-top: 8px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.table-row .status, .table-row .subjects, .table-row .replies, .table-row .last-reply{
+    padding: 16px;
+    margin: 0;
+}
+
+.table-row .status{
+    flex: 5%;
+    font-size: 28px;
+    text-align: center;
+    color: var(--color-highlight);
+}
+
+.table-row .subjects{
+    flex: 65%;
+}
+
+.table-row .subjects span{
+    color: var(--color-text-muted);
+}
+
+.table-row .replies{
+    flex: 15%;
+    color: var(--color-text-muted);
+}
+
+.table-row .last-reply{
+    flex: 15%;
+    color: var(--color-text-muted);
+}
+
+.navigate{
+    margin-block: 20px;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--color-text-muted);
+}
+
+.navigate span{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.navigate a{
+    color: var(--color-highlight);
+    font-weight: 600;
+}
+
+.navigate a:hover{
+    color: var(--color-highlight);
+}
+
+.pagination{
+    padding: 24px 0;
+    font-size: 15px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.pagination a{
+    color: var(--color-highlight);
+    padding: 6px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-weight: 600;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pagination a:hover{
+    background: var(--color-background-alt);
+    transform: translateY(-1px);
+}
+
+.note{
+    background: var(--color-background-alt);
+    padding: 24px;
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    margin: 20px;
+    box-shadow: var(--shadow-soft);
+}
+
+.note span{
+    font-size: 18px;
+    margin-block: 5px;
+    color: var(--color-text-muted);
+}
+
+.note a{
+    color: var(--color-highlight);
+}
+
+@media screen and (max-width: 768px){
+    .table-head,
+    .table-row{
+        flex-direction: column;
+    }
+
+    .table-head div,
+    .table-row .status,
+    .table-row .subjects,
+    .table-row .replies,
+    .table-row .last-reply{
+        width: 100%;
+    }
+
+    .table-row .status{
+        justify-content: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .pagination{
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
